@@ -6,6 +6,12 @@
 
 ---
 
+## Live Demo
+
+The latest version of this project is **deployed and available online** at:  
+**[https://birefringence-web.onrender.com/](https://birefringence-web.onrender.com/)**
+
+---
 ## Features
 
 - Upload microscope images for analysis.
