@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Select 3 Points</title>
+  <style>
+    canvas { border: 1px solid #444; cursor: crosshair; }
+  </style>
+</head>
+<body>
+  <h1>2) Click Exactly 3 Points</h1>
+  <canvas id="canvas"></canvas>
+
+  <form id="coordForm" method="post" action="{{ url_for('compute') }}">
+    {% for i in range(3) %}
+      <input type="hidden" name="x{{i}}" id="x{{i}}">
+      <input type="hidden" name="y{{i}}" id="y{{i}}">
+    {% endfor %}
+  </form>
+
+  <script>
+    const canvas = document.getElementById('canvas'),
+          ctx    = canvas.getContext('2d'),
+          img    = new Image(),
+          form   = document.getElementById('coordForm'),
+          pts    = [];
+
+    img.src = '{{ url_for("uploaded_file", filename=filename) }}';
+    img.onload = () => {
+      canvas.width  = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+    };
+
+    canvas.addEventListener('click', e => {
+      if (pts.length >= 3) return;
+      const rect = canvas.getBoundingClientRect(),
+            x    = Math.round(e.clientX - rect.left),
+            y    = Math.round(e.clientY - rect.top);
+      pts.push({x, y});
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, 2*Math.PI);
+      ctx.strokeStyle = 'red';
+      ctx.lineWidth   = 2;
+      ctx.stroke();
+
+      if (pts.length === 3) {
+        pts.forEach((p,i) => {
+          document.getElementById('x'+i).value = p.x;
+          document.getElementById('y'+i).value = p.y;
+        });
+        form.submit();
+      }
+    });
+  </script>
+</body>
+</html>
